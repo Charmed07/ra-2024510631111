@@ -1,0 +1,11 @@
+@FleetLog.Api_HostAddress = http://localhost:5269
+
+GET {{FleetLog.Api_HostAddress}}/openapi/v1.json
+Accept: application/json
+
+###
+
+GET {{FleetLog.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,1 +1,9 @@
+## Ignorar arquivos de compilação do .NET
 newton-aaw-26.2/
+bin/
+obj/
+*.user
+*.suo
+.vs/
+.vscode/
+appsettings.Development.json
