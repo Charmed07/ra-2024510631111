@@ -1,0 +1,525 @@
+{
+  "info": {
+    "name": "API da Biblioteca - Aula 10 (OpenAPI Import)",
+    "description": "Coleção gerada a partir do openapi.json conforme Passo 11 da Aula 10.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5102"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Autenticação",
+      "item": [
+        {
+          "name": "Realiza a autenticação e devolve um token JWT válido.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Auth",
+                "login"
+              ]
+            },
+            "description": "Usuário didático fixo:\r\n            \r\n    POST /api/auth/login\r\n    {\r\n        \"usuario\": \"bibliotecario\",\r\n        \"senha\": \"newton123\"\r\n    }\r\n            \r\nCopie o token retornado e cole no botão \"Authorize\" do Swagger UI.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Autores",
+      "item": [
+        {
+          "name": "Lista todos os autores cadastrados.",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Autores",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Autores"
+              ]
+            },
+            "description": "Lista todos os autores cadastrados."
+          }
+        },
+        {
+          "name": "Cadastra um novo autor.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Autores",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Autores"
+              ]
+            },
+            "description": "Cadastra um novo autor.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Obtém um autor específico pelo seu ID.",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Autores/{id}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Autores",
+                "{id}"
+              ]
+            },
+            "description": "Obtém um autor específico pelo seu ID."
+          }
+        },
+        {
+          "name": "Atualiza os dados de um autor existente.",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Autores/{id}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Autores",
+                "{id}"
+              ]
+            },
+            "description": "Atualiza os dados de um autor existente.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Remove um autor do cadastro.",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Autores/{id}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Autores",
+                "{id}"
+              ]
+            },
+            "description": "Remove um autor do cadastro."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Empréstimos",
+      "item": [
+        {
+          "name": "Lista todos os empréstimos registrados.",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Emprestimos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Emprestimos"
+              ]
+            },
+            "description": "Lista todos os empréstimos registrados."
+          }
+        },
+        {
+          "name": "Realiza um novo empréstimo de livro.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Emprestimos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Emprestimos"
+              ]
+            },
+            "description": "O livro deve estar disponível (não emprestado).\r\nO prazo de devolução padrão é de 14 dias.\r\n            \r\nExemplo de requisição:\r\n            \r\n    POST /api/emprestimos\r\n    {\r\n        \"livroId\": 1,\r\n        \"nomeUsuario\": \"João Antonio\"\r\n    }",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Obtém um empréstimo específico por ID.",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Emprestimos/{id}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Emprestimos",
+                "{id}"
+              ]
+            },
+            "description": "Obtém um empréstimo específico por ID."
+          }
+        },
+        {
+          "name": "Registra a devolução de um livro emprestado.",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Emprestimos/{id}/devolver",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Emprestimos",
+                "{id}",
+                "devolver"
+              ]
+            },
+            "description": "Registra a devolução de um livro emprestado."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Livros",
+      "item": [
+        {
+          "name": "Lista os livros do acervo com paginação.",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Livros?pagina=1&tamanhoPagina=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Livros"
+              ],
+              "query": [
+                {
+                  "key": "pagina",
+                  "value": "1",
+                  "description": "Número da página (a partir de 1)."
+                },
+                {
+                  "key": "tamanhoPagina",
+                  "value": "10",
+                  "description": "Itens por página (máximo 50)."
+                }
+              ]
+            },
+            "description": "Lista os livros do acervo com paginação."
+          }
+        },
+        {
+          "name": "Cadastra um novo livro no acervo.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Livros",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Livros"
+              ]
+            },
+            "description": "Exemplo de requisição:\r\n            \r\n    POST /api/livros\r\n    {\r\n        \"titulo\": \"Dom Casmurro\",\r\n        \"genero\": \"Romance\",\r\n        \"anoPublicacao\": 1899,\r\n        \"autorId\": 1\r\n    }",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Obtém um livro pelo seu ID.",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Livros/{id}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Livros",
+                "{id}"
+              ]
+            },
+            "description": "Obtém um livro pelo seu ID."
+          }
+        },
+        {
+          "name": "Atualiza um livro existente.",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Livros/{id}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Livros",
+                "{id}"
+              ]
+            },
+            "description": "Atualiza um livro existente.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Remove um livro do acervo.",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Livros/{id}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Livros",
+                "{id}"
+              ]
+            },
+            "description": "Remove um livro do acervo."
+          }
+        },
+        {
+          "name": "Busca livros por título, gênero e/ou autor.",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/Livros/buscar?titulo=&genero=&autorId=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "Livros",
+                "buscar"
+              ],
+              "query": [
+                {
+                  "key": "titulo",
+                  "value": "",
+                  "description": "Trecho do título."
+                },
+                {
+                  "key": "genero",
+                  "value": "",
+                  "description": "Gênero exato."
+                },
+                {
+                  "key": "autorId",
+                  "value": "",
+                  "description": "ID do autor."
+                }
+              ]
+            },
+            "description": "Busca livros por título, gênero e/ou autor."
+          }
+        }
+      ]
+    }
+  ]
+}
