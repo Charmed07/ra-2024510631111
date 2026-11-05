@@ -1,5 +1,5 @@
-using FleetLog.Api.Configurations;
 using FleetLog.Api.Models;
+using FleetLog.Api.Configurations;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -26,5 +26,7 @@ public class MongoDbContext
     }
 
     public IMongoCollection<Veiculo> Veiculos => _database.GetCollection<Veiculo>(_settings.VeiculosCollectionName);
+
+    public IMongoCollection<OrdemDeCarga> OrdensCarga => _database.GetCollection<OrdemDeCarga>(_settings.OrdensCargaCollectionName);
 
 }
