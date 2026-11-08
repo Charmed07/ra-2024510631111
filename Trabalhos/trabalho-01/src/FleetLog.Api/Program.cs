@@ -8,6 +8,7 @@ builder.Services.Configure<MongoDbSettings>(
 // Injeção de Dependências (Singleton/Scoped)
 builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddScoped<IVeiculoService, VeiculoService>();
+builder.Services.AddScoped<IOrdemDeCargaService, OrdemDeCargaService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
