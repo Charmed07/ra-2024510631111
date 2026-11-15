@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using FleetLog.Api.Models;
 using FleetLog.Api.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -54,6 +55,7 @@ public class VeiculosController : ControllerBase
         }
         return NoContent();
     }
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
