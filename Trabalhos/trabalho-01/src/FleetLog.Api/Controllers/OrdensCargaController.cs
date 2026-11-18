@@ -38,6 +38,7 @@ public class OrdensCargaController : ControllerBase
         return Ok (ordem);
     }
 
+    [Authorize(Roles = "Admin , Usuario")]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -66,6 +67,7 @@ public class OrdensCargaController : ControllerBase
 
     }
 
+    [Authorize(Roles = "Admin,Usuario")]
     [HttpPut("{id}/status")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

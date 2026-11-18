@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FleetLog - Gestão de Frotas & Cargas</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- BARRA DE NAVEGAÇÃO SUPERIOR -->
+  <header class="navbar">
+    <div class="logo">🚚 <strong>FleetLog</strong> | Painel Operacional</div>
+    <div id="auth-status" class="auth-status">
+      <span id="user-display">🌐 Operando em modo público</span>
+      <button id="btn-auth-action" class="btn-login-nav" onclick="abrirModalLogin()">Entrar (JWT)</button>
+    </div>
+  </header>
+  <!-- PAINEL DE CONTROLE DE ACESSO (RBAC) -->
+  <div class="rbac-legend-bar">
+    <div class="container rbac-legend-content">
+      <span class="legend-title">🛡️ Níveis de Permissão (RBAC):</span>
+      <span class="legend-item"><span class="badge-dot dot-public"></span> <strong>Público:</strong> Visualizar Frota e Cargas</span>
+      <span class="legend-item"><span class="badge-dot dot-user"></span> <strong>Operador (Usuário):</strong> Despachar Cargas e Concluir Entregas</span>
+      <span class="legend-item"><span class="badge-dot dot-admin"></span> <strong>Administrador (Admin):</strong> Controle Total e Exclusão de Veículos</span>
+    </div>
+  </div>
+  <main class="container">
+    <!-- Alertas Globais -->
+    <div id="alert-box" class="alert-box hidden"></div>
+    <!-- SEÇÃO 1: LISTA DE VEÍCULOS -->
+    <section id="view-lista" class="view">
+      <div class="view-header flex-between">
+        <div>
+          <h2>Frota de Veículos</h2>
+          <p>Selecione um veículo para inspecionar as cargas alocadas ou despachar novas mercadorias.</p>
+        </div>
+      </div>
+      <div id="grid-veiculos" class="grid-cards">
+        <p class="loading">Carregando frota...</p>
+      </div>
+    </section>
+    <!-- SEÇÃO 2: DETALHES DO VEÍCULO E SUAS CARGAS -->
+    <section id="view-detalhe" class="view hidden">
+      <div class="flex-between nav-detalhe-bar">
+        <button class="btn-voltar" onclick="voltarParaLista()">← Voltar para a Frota</button>
+        <button id="btn-excluir-veiculo" class="btn-danger" onclick="confirmarExclusaoVeiculo()">🗑️ Excluir Veículo (Admin)</button>
+      </div>
+      
+      <div id="detalhe-veiculo-info" class="detalhe-card"></div>
+      <div class="view-header flex-between">
+        <h3>Ordens de Carga Alocadas</h3>
+        <button class="btn-primary" onclick="mostrarFormularioCarga()">+ Despachar Nova Carga</button>
+      </div>
+      <div id="tabela-cargas-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Rastreio</th>
+              <th>Destino</th>
+              <th>Peso (kg)</th>
+              <th>Frete (R$)</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-cargas">
+            <tr><td colspan="6">Nenhuma carga alocada.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <!-- SEÇÃO 3: FORMULÁRIO DE NOVA CARGA -->
+    <section id="view-formulario" class="view hidden">
+      <button class="btn-voltar" onclick="voltarParaDetalhe()">← Cancelar e Voltar</button>
+      <div class="form-card">
+        <h3>Despachar Nova Carga para o Veículo</h3>
+        <p id="form-veiculo-desc" class="form-desc"></p>
+        <form id="form-nova-carga" onsubmit="salvarNovaCarga(event)">
+          <input type="hidden" id="form-veiculo-id">
+          <div class="form-group">
+            <label for="form-codigo">Código de Rastreio:</label>
+            <input type="text" id="form-codigo" placeholder="Ex: FL-BR-101" required>
+          </div>
+          <div class="form-group">
+            <label for="form-destino">Cidade de Destino:</label>
+            <input type="text" id="form-destino" placeholder="Ex: Belo Horizonte / MG" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="form-peso">Peso da Mercadoria (kg):</label>
+              <input type="number" id="form-peso" step="0.1" min="1" placeholder="Ex: 1200" required>
+            </div>
+            <div class="form-group">
+              <label for="form-valor">Valor do Frete (R$):</label>
+              <input type="number" id="form-valor" step="0.01" min="1" placeholder="Ex: 850.00" required>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">Confirmar Despacho (POST)</button>
+            <button type="button" class="btn-secondary" onclick="voltarParaDetalhe()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+  <!-- MODAL DE LOGIN JWT & RBAC -->
+  <div id="modal-login" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="flex-between modal-header">
+        <h3>Autenticação JWT / RBAC</h3>
+        <button class="btn-close" onclick="fecharModalLogin()">✕</button>
+      </div>
+      <p class="modal-desc">Faça login com um dos perfis pré-configurados para testar o controle de acesso:</p>
+      <div class="quick-login-box">
+        <button type="button" class="btn-quick btn-quick-user" onclick="preencherLogin('operador@fleetlog.com', 'Operador@123')">
+          👤 Entrar como <strong>Operador (Usuário)</strong>
+        </button>
+        <button type="button" class="btn-quick btn-quick-admin" onclick="preencherLogin('admin@fleetlog.com', 'Admin@1234')">
+          👑 Entrar como <strong>Administrador (Admin)</strong>
+        </button>
+      </div>
+      <form id="form-login" onsubmit="executarLogin(event)">
+        <div class="form-group">
+          <label for="login-email">E-mail:</label>
+          <input type="email" id="login-email" required placeholder="seu-email@fleetlog.com">
+        </div>
+        <div class="form-group">
+          <label for="login-senha">Senha:</label>
+          <input type="password" id="login-senha" required placeholder="••••••••">
+        </div>
+        <div id="login-error" class="login-error hidden"></div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" style="width: 100%;">Efetuar Login (POST /api/Auth/Login)</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script src="js/app.js"></script>
+</body>
+</html>

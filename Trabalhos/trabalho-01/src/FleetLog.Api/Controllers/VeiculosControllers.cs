@@ -31,6 +31,7 @@ public class VeiculosController : ControllerBase
         }
         return Ok(veiculo);
     }
+    [Authorize(Roles = "Admin,Usuario")]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
