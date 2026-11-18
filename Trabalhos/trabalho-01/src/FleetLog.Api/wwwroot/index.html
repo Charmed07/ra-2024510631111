@@ -11,21 +11,21 @@
   <header class="navbar">
     <div class="logo">🚚 <strong>FleetLog</strong> | Painel Operacional</div>
     <div id="auth-status" class="auth-status">
-      <span id="user-display">🌐 Operando em modo público</span>
-      <button id="btn-auth-action" class="btn-login-nav" onclick="abrirModalLogin()">Entrar (JWT)</button>
+      <span id="user-display">🌐 Modo Consulta</span>
+      <button id="btn-auth-action" class="btn-login-nav" onclick="abrirModalLogin()">Entrar</button>
     </div>
   </header>
-  <!-- PAINEL DE CONTROLE DE ACESSO (RBAC) -->
+  <!-- PAINEL DE PERFIS DE ACESSO -->
   <div class="rbac-legend-bar">
     <div class="container rbac-legend-content">
-      <span class="legend-title">🛡️ Níveis de Permissão (RBAC):</span>
-      <span class="legend-item"><span class="badge-dot dot-public"></span> <strong>Público:</strong> Visualizar Frota e Cargas</span>
-      <span class="legend-item"><span class="badge-dot dot-user"></span> <strong>Operador (Usuário):</strong> Despachar Cargas e Concluir Entregas</span>
-      <span class="legend-item"><span class="badge-dot dot-admin"></span> <strong>Administrador (Admin):</strong> Controle Total e Exclusão de Veículos</span>
+      <span class="legend-title">🛡️ Perfis de Acesso:</span>
+      <span class="legend-item"><span class="badge-dot dot-public"></span> <strong>Público:</strong> Apenas visualização da frota</span>
+      <span class="legend-item"><span class="badge-dot dot-user"></span> <strong>Operador:</strong> Despacho de cargas e conclusão de entregas</span>
+      <span class="legend-item"><span class="badge-dot dot-admin"></span> <strong>Administrador:</strong> Gestão completa e exclusão de veículos</span>
     </div>
   </div>
   <main class="container">
-    <!-- Alertas Globais -->
+    <!-- Alertas Globais Amigáveis -->
     <div id="alert-box" class="alert-box hidden"></div>
     <!-- SEÇÃO 1: LISTA DE VEÍCULOS -->
     <section id="view-lista" class="view">
@@ -43,7 +43,7 @@
     <section id="view-detalhe" class="view hidden">
       <div class="flex-between nav-detalhe-bar">
         <button class="btn-voltar" onclick="voltarParaLista()">← Voltar para a Frota</button>
-        <button id="btn-excluir-veiculo" class="btn-danger" onclick="confirmarExclusaoVeiculo()">🗑️ Excluir Veículo (Admin)</button>
+        <button id="btn-excluir-veiculo" class="btn-danger" onclick="confirmarExclusaoVeiculo()">🗑️ Excluir Veículo</button>
       </div>
       
       <div id="detalhe-veiculo-info" class="detalhe-card"></div>
@@ -96,27 +96,27 @@
             </div>
           </div>
           <div class="form-actions">
-            <button type="submit" class="btn-primary">Confirmar Despacho (POST)</button>
+            <button type="submit" class="btn-primary">Confirmar Despacho</button>
             <button type="button" class="btn-secondary" onclick="voltarParaDetalhe()">Cancelar</button>
           </div>
         </form>
       </div>
     </section>
   </main>
-  <!-- MODAL DE LOGIN JWT & RBAC -->
+  <!-- MODAL DE ACESSO AO SISTEMA -->
   <div id="modal-login" class="modal-backdrop hidden">
     <div class="modal-card">
       <div class="flex-between modal-header">
-        <h3>Autenticação JWT / RBAC</h3>
+        <h3>Acesso ao Sistema</h3>
         <button class="btn-close" onclick="fecharModalLogin()">✕</button>
       </div>
-      <p class="modal-desc">Faça login com um dos perfis pré-configurados para testar o controle de acesso:</p>
+      <p class="modal-desc">Selecione um usuário para entrar ou preencha suas credenciais:</p>
       <div class="quick-login-box">
         <button type="button" class="btn-quick btn-quick-user" onclick="preencherLogin('operador@fleetlog.com', 'Operador@123')">
-          👤 Entrar como <strong>Operador (Usuário)</strong>
+          👤 Entrar como <strong>Operador</strong>
         </button>
         <button type="button" class="btn-quick btn-quick-admin" onclick="preencherLogin('admin@fleetlog.com', 'Admin@1234')">
-          👑 Entrar como <strong>Administrador (Admin)</strong>
+          👑 Entrar como <strong>Administrador</strong>
         </button>
       </div>
       <form id="form-login" onsubmit="executarLogin(event)">
@@ -130,7 +130,7 @@
         </div>
         <div id="login-error" class="login-error hidden"></div>
         <div class="form-actions">
-          <button type="submit" class="btn-primary" style="width: 100%;">Efetuar Login (POST /api/Auth/Login)</button>
+          <button type="submit" class="btn-primary" style="width: 100%;">Entrar</button>
         </div>
       </form>
     </div>

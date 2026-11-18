@@ -1,7 +1,7 @@
 let veiculoSelecionado = null;
 let usuarioAutenticado = null; // Guarda { nome, email, role, token }
 // =========================================================================
-//  GERENCIAMENTO DE AUTENTICAÇÃO (JWT & RBAC)
+//  GERENCIAMENTO DE AUTENTICAÇÃO
 // =========================================================================
 function verificarSessao() {
   const salvo = localStorage.getItem('fleetlog_user');
@@ -19,16 +19,16 @@ function atualizarNavbarAuth() {
   const btnAuth = document.getElementById('btn-auth-action');
   if (usuarioAutenticado && usuarioAutenticado.token) {
     const roleBadge = usuarioAutenticado.role === 'Admin' 
-      ? '<span class="badge badge-role-admin">👑 Admin</span>' 
-      : '<span class="badge badge-role-user">👤 Operador (Usuário)</span>';
+      ? '<span class="badge badge-role-admin">👑 Administrador</span>' 
+      : '<span class="badge badge-role-user">👤 Operador</span>';
     
-    display.innerHTML = `Logado como: <strong>${usuarioAutenticado.nome}</strong> ${roleBadge}`;
-    btnAuth.textContent = 'Sair (Logout)';
+    display.innerHTML = `Olá, <strong>${usuarioAutenticado.nome}</strong> (${roleBadge})`;
+    btnAuth.textContent = 'Sair';
     btnAuth.className = 'btn-logout-nav';
     btnAuth.onclick = executarLogout;
   } else {
-    display.innerHTML = '🌐 Operando em modo público (Apenas Leitura)';
-    btnAuth.textContent = 'Entrar (JWT)';
+    display.innerHTML = '🌐 Modo Consulta (Apenas Leitura)';
+    btnAuth.textContent = 'Entrar';
     btnAuth.className = 'btn-login-nav';
     btnAuth.onclick = abrirModalLogin;
   }
@@ -60,9 +60,8 @@ async function executarLogin(evento) {
     });
     const dados = await resposta.json();
     if (!resposta.ok) {
-      throw new Error(dados.mensagem || 'Falha ao autenticar.');
+      throw new Error(dados.mensagem || 'E-mail ou senha incorretos.');
     }
-    // Salva sessão
     usuarioAutenticado = {
       token: dados.token,
       nome: dados.usuario.nome,
@@ -72,7 +71,7 @@ async function executarLogin(evento) {
     localStorage.setItem('fleetlog_user', JSON.stringify(usuarioAutenticado));
     fecharModalLogin();
     atualizarNavbarAuth();
-    exibirAlerta(`Bem-vindo, ${usuarioAutenticado.nome}! Perfil ativo: ${usuarioAutenticado.role}.`, 'success');
+    exibirAlerta(`Login realizado com sucesso! Bem-vindo(a), ${usuarioAutenticado.nome}.`, 'success');
   } catch (erro) {
     erroBox.textContent = erro.message;
     erroBox.classList.remove('hidden');
@@ -82,7 +81,7 @@ function executarLogout() {
   usuarioAutenticado = null;
   localStorage.removeItem('fleetlog_user');
   atualizarNavbarAuth();
-  exibirAlerta('Você encerrou a sessão. O sistema voltou ao modo público.', 'success');
+  exibirAlerta('Sessão encerrada com sucesso. O sistema voltou ao modo de consulta.', 'success');
 }
 function obterHeadersAutenticados() {
   const headers = { 'Content-Type': 'application/json' };
@@ -131,10 +130,10 @@ async function carregarVeiculos() {
   grid.innerHTML = '<p class="loading">Carregando frota...</p>';
   try {
     const resposta = await fetch('/api/veiculos');
-    if (!resposta.ok) throw new Error('Falha ao consultar veículos da frota.');
+    if (!resposta.ok) throw new Error('Não foi possível carregar os veículos. Verifique a conexão com o servidor.');
     const veiculos = await resposta.json();
     if (veiculos.length === 0) {
-      grid.innerHTML = '<p>Nenhum veículo cadastrado na frota.</p>';
+      grid.innerHTML = '<p>Nenhum veículo cadastrado na frota no momento.</p>';
       return;
     }
     grid.innerHTML = veiculos.map(v => `
@@ -209,20 +208,19 @@ async function abrirDetalhesVeiculo(id) {
     exibirAlerta(erro.message, 'error');
   }
 }
-// Exclusão de Veículo (DELETE com RBAC restrito a Admin)
+// Exclusão de Veículo (Restrito a Administrador)
 async function confirmarExclusaoVeiculo() {
   if (!veiculoSelecionado) return;
-  // Verificação de permissão no frontend
   if (!usuarioAutenticado || !usuarioAutenticado.token) {
-    exibirAlerta('Acesso Negado (401)! Você precisa estar logado como Administrador para excluir veículos.', 'error');
+    exibirAlerta('Você precisa fazer login como Administrador para poder excluir veículos.', 'error');
     abrirModalLogin();
     return;
   }
   if (usuarioAutenticado.role !== 'Admin') {
-    exibirAlerta(`Acesso Negado (403 Forbidden)! Seu perfil atual é "${usuarioAutenticado.role}". Apenas o perfil Administrador pode excluir veículos (Regra RBAC).`, 'error');
+    exibirAlerta('Ação não permitida: apenas Administradores têm permissão para remover veículos da frota.', 'error');
     return;
   }
-  if (!confirm(`Tem certeza que deseja excluir o veículo ${veiculoSelecionado.placa}? Esta ação chamará DELETE /api/Veiculos/{id} com o token do Admin.`)) {
+  if (!confirm(`Deseja realmente remover o veículo ${veiculoSelecionado.placa} da frota? Esta ação não pode ser desfeita.`)) {
     return;
   }
   try {
@@ -231,38 +229,38 @@ async function confirmarExclusaoVeiculo() {
       headers: obterHeadersAutenticados()
     });
     if (resposta.status === 204) {
-      exibirAlerta(`Veículo ${veiculoSelecionado.placa} excluído com sucesso (Status 204 No Content)!`, 'success');
+      exibirAlerta(`Veículo ${veiculoSelecionado.placa} removido da frota com sucesso!`, 'success');
       voltarParaLista();
     } else if (resposta.status === 403) {
-      throw new Error('403 Forbidden: Usuário não tem permissão de Admin.');
+      throw new Error('Permissão insuficiente para excluir este veículo.');
     } else {
-      throw new Error('Falha ao excluir o veículo.');
+      throw new Error('Não foi possível excluir o veículo no momento.');
     }
   } catch (erro) {
     exibirAlerta(erro.message, 'error');
   }
 }
 // =========================================================================
-//  VISÃO 3: FORMULÁRIO DE NOVA CARGA (FETCH POST COM CAPTURA DE 400)
+//  VISÃO 3: FORMULÁRIO DE NOVA CARGA
 // =========================================================================
 function mostrarFormularioCarga() {
   if (!usuarioAutenticado || !usuarioAutenticado.token) {
-    exibirAlerta('Acesso Restrito (401)! Você precisa estar logado como Operador ou Administrador para despachar cargas.', 'error');
+    exibirAlerta('Você precisa fazer login para despachar novas cargas.', 'error');
     abrirModalLogin();
     return;
   }
   if (!veiculoSelecionado) return;
   document.getElementById('form-veiculo-id').value = veiculoSelecionado.id;
   document.getElementById('form-veiculo-desc').textContent = 
-    `Alocando mercadoria para o caminhão ${veiculoSelecionado.placa} (Capacidade: ${veiculoSelecionado.capacidadeCargaKg} kg).`;
+    `Alocando mercadoria para o caminhão ${veiculoSelecionado.placa} (Capacidade máxima: ${veiculoSelecionado.capacidadeCargaKg} kg).`;
   document.getElementById('form-nova-carga').reset();
   mostrarTela('view-formulario');
 }
 async function salvarNovaCarga(evento) {
   evento.preventDefault();
   limparAlerta();
-   if (!usuarioAutenticado || !usuarioAutenticado.token) {
-    exibirAlerta('Acesso Negado (401)! Você precisa estar autenticado como Operador ou Admin para cadastrar cargas.', 'error');
+  if (!usuarioAutenticado || !usuarioAutenticado.token) {
+    exibirAlerta('Você precisa fazer login para despachar cargas.', 'error');
     abrirModalLogin();
     return;
   }
@@ -281,19 +279,19 @@ async function salvarNovaCarga(evento) {
     });
     const resultado = await resposta.json();
     if (!resposta.ok) {
-      // Captura a violação da regra de negócio (Status 400 Bad Request)
-      throw new Error(resultado.mensagem || 'Falha ao despachar a carga.');
+      // Exibe a mensagem de negócio direta (ex: "O peso total excede a capacidade do veículo")
+      throw new Error(resultado.mensagem || 'Não foi possível despachar a carga.');
     }
-    exibirAlerta('Ordem de carga despachada com sucesso (Status 201 Created)!', 'success');
+    exibirAlerta('Carga despachada com sucesso!', 'success');
     abrirDetalhesVeiculo(veiculoSelecionado.id);
   } catch (erro) {
     exibirAlerta(erro.message, 'error');
   }
 }
-// Concluir Entrega (PUT)
+// Concluir Entrega
 async function concluirEntrega(cargaId) {
   if (!usuarioAutenticado || !usuarioAutenticado.token) {
-    exibirAlerta('Acesso Restrito (401)! Você precisa estar logado para concluir entregas.', 'error');
+    exibirAlerta('Você precisa fazer login para concluir entregas.', 'error');
     abrirModalLogin();
     return;
   }
@@ -304,7 +302,7 @@ async function concluirEntrega(cargaId) {
       body: JSON.stringify(3) // StatusEntrega.Entregue = 3
     });
     if (!resp.ok) throw new Error('Não foi possível atualizar o status da entrega.');
-    exibirAlerta('Entrega concluída com sucesso! Capacidade do veículo liberada.', 'success');
+    exibirAlerta('Entrega concluída com sucesso! A capacidade do veículo foi liberada.', 'success');
     abrirDetalhesVeiculo(veiculoSelecionado.id);
   } catch (erro) {
     exibirAlerta(erro.message, 'error');
